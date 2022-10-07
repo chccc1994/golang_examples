@@ -10,6 +10,7 @@ import (
 	"github.com/chccc1994/bilibili/pkg/e"
 	"github.com/chccc1994/bilibili/service"
 	"github.com/chccc1994/bilibili/utils"
+	"github.com/chccc1994/bilibili/utils/jwt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -107,5 +108,51 @@ func SendCode(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": 200,
 		"msg":  "Sending succeeded",
+	})
+}
+
+func UserUpdate(c *gin.Context) {
+	// 用户更新
+
+	// 检查当前用户是否存在 email
+	user_name := c.PostForm("user_name")
+	if user_name == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 200,
+			"msg":  "Parameter error",
+		})
+		return
+	}
+	// 更新
+	var userUpdateService service.UserUpdate
+	_ = c.ShouldBind(&userUpdateService)
+	_, chaim, _ := jwt.ParseToken(c.GetHeader("Authorization"))
+	res := userUpdateService.UserUpdate(chaim.UserId)
+	c.JSON(http.StatusOK, gin.H{
+		"Status": e.SUCCESS,
+		"Msg":    e.GetMsg(e.SUCCESS),
+		"Data":   res,
+	})
+}
+func UserInfo(c *gin.Context) {
+	var userInfoService service.UserInfo
+	_ = c.ShouldBind(&userInfoService)
+	_, chaim, _ := jwt.ParseToken(c.GetHeader("Authorization"))
+	fmt.Println("Ok")
+	res := userInfoService.UserShow(chaim.UserId)
+	c.JSON(http.StatusOK, gin.H{
+		"Status": e.SUCCESS,
+		"Msg":    e.GetMsg(e.SUCCESS),
+		"Data":   res,
+	})
+}
+func UserSearch(c *gin.Context) {
+	var userSearchService service.UserSearch
+	_ = c.ShouldBind(&userSearchService)
+	res := userSearchService.UserSearch()
+	c.JSON(http.StatusOK, gin.H{
+		"Status": e.SUCCESS,
+		"Msg":    e.GetMsg(e.SUCCESS),
+		"Data":   res,
 	})
 }

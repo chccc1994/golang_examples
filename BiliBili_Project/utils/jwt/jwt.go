@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"errors"
 	"time"
 
 	"github.com/chccc1994/bilibili/models"
@@ -42,15 +41,20 @@ func GenToken(user models.User) (string, error) {
 func ParseToken(tokenString string) (*jwt.Token, *MyClaims, error) {
 	// 解析token
 
-	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{},
-		func(token *jwt.Token) (i interface{}, err error) {
-			return jwtkey, nil
-		})
-	if err != nil {
-		return nil, nil, err
-	}
-	if claims, ok := token.Claims.(*MyClaims); ok && token.Valid { // 校验token
-		return token, claims, nil
-	}
-	return nil, nil, errors.New("invalid token")
+	// token, err := jwt.ParseWithClaims(tokenString, &MyClaims{},
+	// 	func(token *jwt.Token) (i interface{}, err error) {
+	// 		return jwtkey, nil
+	// 	})
+	// if err != nil {
+	// 	return nil, nil, err
+	// }
+	// if claims, ok := token.Claims.(*MyClaims); ok && token.Valid { // 校验token
+	// 	return token, claims, nil
+	// }
+	// return nil, nil, errors.New("invalid token")
+	claims := &MyClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (i interface{}, e error) {
+		return jwtkey, nil
+	})
+	return token, claims, err
 }
