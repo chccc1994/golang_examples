@@ -7,5 +7,8 @@ SHOW TABLES;
 -- CREATE TABLE users(
 
 -- )
+SET foreign_key_checks=0;  # 关闭外键检查
+
 SHOW CREATE TABLE admins;
 
+SELECT * FROM users;

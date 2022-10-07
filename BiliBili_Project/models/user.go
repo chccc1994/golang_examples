@@ -1,7 +1,8 @@
 package models
 
 import (
-	"go.starlark.net/lib/time"
+	"time"
+
 	"gorm.io/gorm"
 )
 

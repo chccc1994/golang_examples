@@ -24,7 +24,10 @@ func InitMySQLDb() {
 		utils.DbPort,
 		utils.DbName,
 	)
-	Db, err = gorm.Open(mysql.Open(dns), &gorm.Config{})
+	// 配置中取消数据库级联
+	Db, err = gorm.Open(mysql.Open(dns), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
 		log.Panicln("Database Connect Error")
 		return
@@ -38,10 +41,11 @@ func InitMySQLDb() {
 	sqlDb.SetConnMaxLifetime(10 * time.Second)
 }
 
-func InitRedisDb() *redis.Client {
+// Redis数据库初始化
+func InitRedisDB() *redis.Client {
 	return redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Addr:     utils.RedisAddress,
+		Password: utils.RedisPassword, // no password set
+		DB:       utils.RedisDb,       // use default DB
 	})
 }
